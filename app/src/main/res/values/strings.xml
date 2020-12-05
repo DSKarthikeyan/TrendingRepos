@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">TrendingRepos</string>
+
+    <string name="text_user_name">User Name</string>
+    <string name="text_user_image">User Image</string>
+    <string name="text_project_name">Project Name</string>
+    <string name="text_description">Description</string>
+    <string name="text_programming_language">Programming Language</string>
+    <string name="text_repo_count">Star Count</string>
+
+    <string name="text_avatar">Avatar</string>
+    <string name="text_language">Language</string>
 </resources>
