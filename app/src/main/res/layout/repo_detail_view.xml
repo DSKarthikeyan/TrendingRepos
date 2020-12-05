@@ -2,15 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/_2ssp">
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_4ssp">
 
     <ImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:src="@android:drawable/ic_menu_add"
+        android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,11 +53,11 @@
 
     <ImageView
         android:id="@+id/imageViewLanguageLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:adjustViewBounds="true"
-        android:src="@android:drawable/ic_menu_add"
+        android:layout_width="@dimen/_15ssp"
+        android:layout_height="@dimen/_15ssp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/solid_circle"
+        android:padding="@dimen/_3ssp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
 
@@ -88,7 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:adjustViewBounds="true"
-        android:src="@android:drawable/ic_menu_add"
+        android:src="@drawable/ic_star_24"
         app:layout_constraintEnd_toStartOf="@+id/textViewRepoCount"
         app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

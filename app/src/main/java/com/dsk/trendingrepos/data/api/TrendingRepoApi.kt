@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 interface TrendingRepoApi {
 
-    @GET("/repositories")
-    suspend fun getTrendingRepo(): Response<RepoDetails>
+    @GET("repositories")
+    suspend fun getTrendingRepo(): Response<List<RepoDetails>>
 
 }
