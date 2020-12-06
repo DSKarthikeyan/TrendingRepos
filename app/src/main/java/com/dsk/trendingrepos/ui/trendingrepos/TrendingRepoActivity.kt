@@ -3,6 +3,7 @@ package com.dsk.trendingrepos.ui.trendingrepos
 import android.app.SearchManager
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -25,6 +26,7 @@ import com.dsk.trendingrepos.R
 import com.dsk.trendingrepos.TrendingRepoApplication
 import com.dsk.trendingrepos.adapter.TrendingRepoAdapter
 import com.dsk.trendingrepos.data.db.TrendingRepoDatabase
+import com.dsk.trendingrepos.data.model.RepoDetails
 import com.dsk.trendingrepos.data.repository.TrendingRepoRepository
 import com.dsk.trendingrepos.util.Resource
 
@@ -37,6 +39,7 @@ class TrendingRepoActivity : AppCompatActivity() {
     lateinit var swipeToRefreshRepoList: SwipeRefreshLayout
     lateinit var progressBarCircular: ProgressBar
     private lateinit var textViewStatus: TextView
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,13 +83,11 @@ class TrendingRepoActivity : AppCompatActivity() {
                     hideProgressBar()
                     response.data?.let { newsResponse ->
                         trendingRepoAdapter.differ.submitList(newsResponse)
-//                        Log.d("DSK", " $newsResponse");
                     }
                 }
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.e("DSK ", "An error occured: $message")
                         showLoadingText(message)
                     }
                 }
@@ -114,6 +115,7 @@ class TrendingRepoActivity : AppCompatActivity() {
 
     private fun showLoadingText(message: String) {
         if (message.isNotEmpty()) {
+            trendingRepoRecyclerView.visibility = View.INVISIBLE
             textViewStatus.visibility = View.VISIBLE
             textViewStatus.text = message
         }
@@ -158,7 +160,7 @@ class TrendingRepoActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
 
         searchView.setSearchableInfo(
             searchManager
@@ -166,8 +168,12 @@ class TrendingRepoActivity : AppCompatActivity() {
         )
         searchView.maxWidth = Int.MAX_VALUE
         searchView.setOnCloseListener {
-            trendingRepoViewModel.getTrendingRepo()
+           Log.d("DSK 111","Close 11")
             false
+        }
+        searchManager.setOnDismissListener {
+            // return the activity to the normal state
+            Log.d("DSK 111","dismiss 11")
         }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -188,5 +194,13 @@ class TrendingRepoActivity : AppCompatActivity() {
         return if (id == R.id.action_search) {
             true
         } else super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        if (!searchView.isIconified) {
+            searchView.onActionViewCollapsed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

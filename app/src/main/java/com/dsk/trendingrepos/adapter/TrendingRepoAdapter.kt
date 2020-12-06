@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.dsk.trendingrepos.R
 import com.dsk.trendingrepos.data.model.RepoDetails
 import kotlinx.android.synthetic.main.repo_detail_view.view.*
+import okhttp3.internal.toImmutableList
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,7 +37,10 @@ class TrendingRepoAdapter :
 
         holder.itemView.apply {
             val mDrawable = ContextCompat.getDrawable(context, R.drawable.solid_circle)!!.mutate()
-            mDrawable.colorFilter = PorterDuffColorFilter(Color.parseColor(currentList.languageColor), PorterDuff.Mode.SRC_IN)
+            mDrawable.colorFilter = PorterDuffColorFilter(
+                Color.parseColor(currentList.languageColor),
+                PorterDuff.Mode.SRC_IN
+            )
             imageViewLanguageLogo.setImageDrawable(mDrawable)
             imageViewRepoStar.setImageResource(R.drawable.ic_star_24)
             Glide.with(holder.itemView)
@@ -75,9 +79,7 @@ class TrendingRepoAdapter :
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charSearch = constraint.toString()
-                trendingRepoFilterList = if (charSearch.isEmpty()) {
-                    trendingRepoFilterList
-                } else {
+                if (charSearch.isNotEmpty()) {
                     val resultList = ArrayList<RepoDetails>()
                     for (row in differ.currentList) {
                         if (row.name.toLowerCase(Locale.ROOT)
@@ -86,7 +88,7 @@ class TrendingRepoAdapter :
                             resultList.add(row)
                         }
                     }
-                    resultList
+                    trendingRepoFilterList = resultList
                 }
                 val filterResults = FilterResults()
                 filterResults.values = trendingRepoFilterList
@@ -100,8 +102,6 @@ class TrendingRepoAdapter :
                     if (trendingRepoFilterList.isNotEmpty() && trendingRepoFilterList.size > 0) {
                         differ.submitList(trendingRepoFilterList)
                     }
-                }else{
-
                 }
             }
         }
