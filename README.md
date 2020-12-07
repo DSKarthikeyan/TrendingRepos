@@ -16,6 +16,7 @@ git clone git@github.com:DSKarthikeyan/TrendingRepos.git
 4. Handled loading state and error state.
 5. Offline support. Once the data is fetched successfully from
    remote, it will stored locally.
+6. Dark and Light theme Support   
 6. MVVM project structure.
 
 ### Gradle configuration
