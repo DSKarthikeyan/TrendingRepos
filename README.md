@@ -26,7 +26,8 @@ dependencies {
            implementation 'com.squareup.retrofit2:retrofit:2.6.1'
            implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
            implementation "com.squareup.okhttp3:logging-interceptor:4.5.0"
-}```
+}
+```
 
 For loading images Glide Library Used
 
@@ -34,7 +35,8 @@ For loading images Glide Library Used
 dependencies {
        implementation 'com.github.bumptech.glide:glide:4.11.0'
        kapt 'com.github.bumptech.glide:compiler:4.11.0'
-}```
+}
+```
 
 For Local Room DB and Room DB coroutine support
 
@@ -46,7 +48,8 @@ dependencies {
 
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.2.5"
-}```
+}
+```
 
 
 ### Library
