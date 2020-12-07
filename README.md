@@ -4,8 +4,9 @@ A Android application to fetch trending repositories from github using Github tr
 ### Installation
 Clone this repository and import into Android Studio
 
+```
 git clone git@github.com:DSKarthikeyan/TrendingRepos.git
-
+```
 
 ### Functionality
 
