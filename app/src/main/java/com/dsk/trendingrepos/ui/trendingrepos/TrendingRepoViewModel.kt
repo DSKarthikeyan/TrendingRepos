@@ -1,6 +1,5 @@
 package com.dsk.trendingrepos.ui.trendingrepos
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
@@ -15,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okio.IOException
 import retrofit2.Response
-import java.io.IOError
 
 class TrendingRepoViewModel(
     application: TrendingRepoApplication,
@@ -24,16 +22,21 @@ class TrendingRepoViewModel(
 
     val trendingRepoList: MutableLiveData<Resource<List<RepoDetails>>> = MutableLiveData()
 
-//    init {
-//       getTrendingRepo()
-//    }
-
+    /**
+     * fun: to get Trending Repo details from server
+     */
     fun getTrendingRepo() = viewModelScope.launch {
         getTrendingRepoDetails()
     }
 
+    /**
+     * fun: get trending repo from local database through repository
+     */
     fun getTrendingRepoFromLocal() = trendingRepoRepository.getRepoDetailsFromLocal()
 
+    /**
+     * fun: get trending repo from server
+     */
     private suspend fun getTrendingRepoDetails() {
         try {
             if (hasInternetConnection()) {
@@ -51,6 +54,10 @@ class TrendingRepoViewModel(
         }
     }
 
+    /**
+     * fun: toHandle RepoDetails input and insert to LocalDB
+     *    and to return if Server fetched response is successful
+     */
     private fun handleTrendingReposResponse(response: Response<List<RepoDetails>>): Resource<List<RepoDetails>>? {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
@@ -63,6 +70,9 @@ class TrendingRepoViewModel(
         return Resource.Error(response.message())
     }
 
+    /**
+     * fun: to handle Internet Connectivity
+     */
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<TrendingRepoApplication>().getSystemService(
             Context.CONNECTIVITY_SERVICE

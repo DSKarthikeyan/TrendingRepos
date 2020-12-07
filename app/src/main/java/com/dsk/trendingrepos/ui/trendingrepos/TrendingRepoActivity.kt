@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -39,6 +40,7 @@ class TrendingRepoActivity : AppCompatActivity() {
     lateinit var swipeToRefreshRepoList: SwipeRefreshLayout
     lateinit var progressBarCircular: ProgressBar
     private lateinit var textViewStatus: TextView
+    private lateinit var buttonTryAgain: Button
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,17 +48,26 @@ class TrendingRepoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_trending_repo)
 
         initializeViews()
-        initTrendingRepoView()
     }
 
+    /**
+     * fun: initialize View Objects
+     */
     private fun initializeViews() {
         trendingRepoRecyclerView = findViewById(R.id.recyclerViewRepoList)
         swipeToRefreshRepoList = findViewById(R.id.swipeRefreshRepoList)
         progressBarCircular = findViewById(R.id.progressCircularBar)
         textViewStatus = findViewById(R.id.textViewStatus)
+        buttonTryAgain = findViewById(R.id.buttonTryAgain)
 
+        initTrendingRepoView()
+
+        buttonTryAgain.setOnClickListener { trendingRepoViewModel.getTrendingRepo() }
     }
 
+    /**
+     * fun: initialize and load Repo Details View
+     */
     private fun initTrendingRepoView() {
         val trendingRepoDatabase = TrendingRepoDatabase(this)
         val trendingRepoRepository = TrendingRepoRepository(trendingRepoDatabase)
@@ -64,10 +75,8 @@ class TrendingRepoActivity : AppCompatActivity() {
             application as TrendingRepoApplication,
             trendingRepoRepository
         )
-
-        trendingRepoViewModel = ViewModelProvider(this, viewModelProviderFactory).get(
-            TrendingRepoViewModel::class.java
-        )
+        trendingRepoViewModel =
+            ViewModelProvider(this, viewModelProviderFactory).get(TrendingRepoViewModel::class.java)
 
         trendingRepoViewModel.getTrendingRepoFromLocal().observe(this, { response ->
             if (response.isNotEmpty()) {
@@ -98,29 +107,43 @@ class TrendingRepoActivity : AppCompatActivity() {
         })
 
         setupRecyclerView()
-
     }
 
+    /**
+     * fun: Hide loading Progress Bar
+     */
     private fun hideProgressBar() {
         trendingRepoRecyclerView.visibility = View.VISIBLE
         progressBarCircular.visibility = View.INVISIBLE
         textViewStatus.visibility = View.INVISIBLE
+        buttonTryAgain.visibility = View.INVISIBLE
     }
 
+    /**
+     * fun: show progress bar
+     */
     private fun showProgressBar() {
         trendingRepoRecyclerView.visibility = View.INVISIBLE
         progressBarCircular.visibility = View.VISIBLE
         showLoadingText(resources.getString(R.string.text_loading))
+        buttonTryAgain.visibility = View.INVISIBLE
     }
 
+    /**
+     * fun: ShowText based on Loader
+     */
     private fun showLoadingText(message: String) {
         if (message.isNotEmpty()) {
             trendingRepoRecyclerView.visibility = View.INVISIBLE
             textViewStatus.visibility = View.VISIBLE
             textViewStatus.text = message
+            buttonTryAgain.visibility = View.VISIBLE
         }
     }
 
+    /**
+     * fun: setup Recycler View
+     */
     private fun setupRecyclerView() {
         trendingRepoAdapter = TrendingRepoAdapter()
         trendingRepoRecyclerView.apply {
@@ -132,6 +155,9 @@ class TrendingRepoActivity : AppCompatActivity() {
         setupSwipeToRefresh()
     }
 
+    /**
+     * fun: initialize Swipe to Reload
+     */
     private fun setupSwipeToRefresh() {
         swipeToRefreshRepoList.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.teal_200))
         swipeToRefreshRepoList.setColorSchemeColors(Color.WHITE)
@@ -142,6 +168,9 @@ class TrendingRepoActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * fun: load item divider in recycler view
+     */
     private fun RecyclerView.setDivider(@DrawableRes drawableRes: Int) {
         val divider = DividerItemDecoration(
             this.context,
@@ -157,6 +186,9 @@ class TrendingRepoActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * fun: option Menu Handler in Toolbar
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.search_bar, menu)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -168,13 +200,12 @@ class TrendingRepoActivity : AppCompatActivity() {
         )
         searchView.maxWidth = Int.MAX_VALUE
         searchView.setOnCloseListener {
-           Log.d("DSK 111","Close 11")
             false
         }
-        searchManager.setOnDismissListener {
-            // return the activity to the normal state
-            Log.d("DSK 111","dismiss 11")
-        }
+
+        /**
+         * search view input Listener
+         */
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 trendingRepoAdapter.filter.filter(query)
@@ -196,6 +227,10 @@ class TrendingRepoActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
+    /**
+     * fun: onHardware backPressed Listener
+     *  i. while Searching when back pressed it clears the view
+     */
     override fun onBackPressed() {
         if (!searchView.isIconified) {
             searchView.onActionViewCollapsed();
